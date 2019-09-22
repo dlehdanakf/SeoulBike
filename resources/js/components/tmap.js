@@ -8,7 +8,7 @@ function _getMarkerColor(count) {
 	let color = `success`;
 	if(count == 0) {
 		color = `critical`;
-	} else if(count < 3) {
+	} else if(count <= 3) {
 		color = `yellow`;
 	}
 
