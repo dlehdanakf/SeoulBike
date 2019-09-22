@@ -1,10 +1,6 @@
 import { sendMessageToParent as sendMessage } from "./components/message";
 import { constructMapInstance, renderMarker } from "./components/tmap.js";
 
-const SIZE = new Tmap.Size(38, 38);
-const OFFSET = new Tmap.Pixel(-(SIZE.w / 2), -(SIZE.h));
-const CENTER = new Tmap.LonLat(`127.07621710650977`, `37.54204488630741`);
-
 const EVENT_LISTENER = {
 	markerList: [],
 	_removeAllMarkers: function(markerLayer) {
@@ -19,7 +15,7 @@ const EVENT_LISTENER = {
 		this._removeAllMarkers(markerLayer);
 
 		stationList.forEach(e => {
-			renderMarker(e).then(marker => {
+			renderMarker(e, map).then(marker => {
 				markerLayer.addMarker(marker);
 				this.markerList.push(marker);
 			});
@@ -30,10 +26,11 @@ const FIRE_EVENT = {
 	requestStationStatus: function(map) {
 		const extent = map.getExtent().transform("EPSG:3857", "EPSG:4326");
 		const { top, bottom, left, right } = extent;
+		const zoom = map.getZoom();
 
 		sendMessage({
 			name: `requestStationStatus`,
-			options: { top, bottom, left, right }
+			options: { top, bottom, left, right, zoom }
 		});
 	}
 };

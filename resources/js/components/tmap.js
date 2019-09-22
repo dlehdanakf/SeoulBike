@@ -1,7 +1,10 @@
 /* global Tmap */
-const CENTER = new Tmap.LonLat(`127.07621710650977`, `37.54204488630741`);
+import { taffy } from "taffydb";
 
-function _getMarkerLabelSource(name, count) {
+const CENTER = new Tmap.LonLat(`127.07621710650977`, `37.54204488630741`);
+const CACHE = taffy();
+
+function _getMarkerColor(count) {
 	let color = `success`;
 	if(count == 0) {
 		color = `critical`;
@@ -9,23 +12,43 @@ function _getMarkerLabelSource(name, count) {
 		color = `yellow`;
 	}
 
-	const label = (function(e) {
-		const nameArr = e.split(` `);
-		nameArr.splice(0, 1);
-
-		return nameArr.join(` `);
-	})(name);
-
-	return `https://img.shields.io/badge/${label}-${count == 0 ? `없음` : count}-${color}`;
+	return color;
 }
-function _renderMarkerImage(name, count) {
+function _getMarkerLabelString(e) {
+	const nameArr = e.split(` `);
+	nameArr.splice(0, 1);
+
+	return nameArr.join(` `);
+}
+function _getMarkerLabelSource(name, count, map) {
+	const color = _getMarkerColor(count);
+	const cnt = count == 0 ? `없음` : count;
+
+	if(parseInt(map.getZoom(), 10) >= 16) {
+		const label = _getMarkerLabelString(name);
+		return `https://img.shields.io/badge/${label}-${cnt}-${color}`;
+	}
+
+	return `https://img.shields.io/badge/${cnt}-${color}`;
+}
+function _renderMarkerImage(name, count, map) {
 	return new Promise(resolve => {
-		const imgSrc = _getMarkerLabelSource(name, count);
-		const img = new Image;
-		img.onload = function() {
-			resolve({ width: this.width, height: this.height, src: imgSrc });
-		};
-		img.src = imgSrc;
+		const imgSrc = _getMarkerLabelSource(name, count, map);
+		const query = CACHE({src: imgSrc});
+		if(query.count() > 0) {
+			const { width, height, src } = query.first();
+			resolve({ width, height, src });
+		} else {
+			const img = new Image;
+			img.onload = function() {
+				const { width, height } = img;
+				const obj = { width, height, src: imgSrc };
+
+				CACHE.insert(obj);
+				resolve(obj);
+			};
+			img.src = imgSrc;
+		}
 	});
 }
 
@@ -47,9 +70,9 @@ export function constructMapInstance(contentEl, nodeQuery) {
 
 	return { map, markerLayer };
 }
-export function renderMarker({ stationLatitude, stationLongitude, stationName, parkingBikeTotCnt }) {
+export function renderMarker({ stationLatitude, stationLongitude, stationName, parkingBikeTotCnt }, map) {
 	return new Promise(resolve => {
-		_renderMarkerImage(stationName, parkingBikeTotCnt).then(e => {
+		_renderMarkerImage(stationName, parkingBikeTotCnt, map).then(e => {
 			const { width, height, src } = e;
 
 			const coordinate = new Tmap.LonLat(stationLongitude, stationLatitude).transform("EPSG:4326", "EPSG:3857");
