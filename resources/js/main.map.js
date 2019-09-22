@@ -1,4 +1,5 @@
-import { sendMessageToParent as sendMessage, sendMessageToParent } from "./components/message";
+import { sendMessageToParent as sendMessage } from "./components/message";
+import { constructMapInstance, renderMarker } from "./components/tmap.js";
 
 const SIZE = new Tmap.Size(38, 38);
 const OFFSET = new Tmap.Pixel(-(SIZE.w / 2), -(SIZE.h));
@@ -18,12 +19,10 @@ const EVENT_LISTENER = {
 		this._removeAllMarkers(markerLayer);
 
 		stationList.forEach(e => {
-			const { stationLatitude, stationLongitude } = e;
-			const lonlat = new Tmap.LonLat(stationLongitude, stationLatitude).transform("EPSG:4326", "EPSG:3857");
-			const marker = new Tmap.Marker(lonlat, new Tmap.Icon('http://tmapapis.sktelecom.com/upload/tmap/marker/pin_b_m_a.png', SIZE,  OFFSET));
-
-			markerLayer.addMarker(marker);
-			this.markerList.push(marker);
+			renderMarker(e).then(marker => {
+				markerLayer.addMarker(marker);
+				this.markerList.push(marker);
+			});
 		});
 	}
 };
@@ -39,24 +38,9 @@ const FIRE_EVENT = {
 	}
 };
 
-function constructMapInstance() {
-	const contentEl = document.querySelector(`#main-content`);
-	const { offsetWidth, offsetHeight } = contentEl;
-	const map = new Tmap.Map({
-		div: `map-container`,
-		width: `${offsetWidth}px`,
-		height: `${offsetHeight}px`
-	});
-
-	const markerLayer = new Tmap.Layer.Markers();//마커 레이어 생성
-	map.addLayer(markerLayer);//map에 마커 레이어 추가
-	
-	map.setCenter(CENTER.transform("EPSG:4326", "EPSG:3857"), 16);
-	return { map, markerLayer };
-}
-
 document.addEventListener(`DOMContentLoaded`, function() {
-	const { map, markerLayer } = constructMapInstance();
+	const contentEl = document.querySelector(`#main-content`);
+	const { map, markerLayer } = constructMapInstance(contentEl, `map-container`);
 
 	FIRE_EVENT.requestStationStatus(map);
 	map.events.register('moveend', map, () => {
