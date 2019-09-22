@@ -1,5 +1,6 @@
 /* global Tmap */
 import { taffy } from "taffydb";
+import {sendMessageToParent} from "./message";
 
 const CENTER = new Tmap.LonLat(`127.07621710650977`, `37.54204488630741`);
 const CACHE = taffy();
@@ -70,7 +71,12 @@ export function constructMapInstance(contentEl, nodeQuery) {
 
 	return { map, markerLayer };
 }
-export function renderMarker({ stationLatitude, stationLongitude, stationName, parkingBikeTotCnt }, map) {
+export function renderMarker(station, map) {
+	const {
+		stationLatitude, stationLongitude,
+		stationName, parkingBikeTotCnt
+	} = station;
+
 	return new Promise(resolve => {
 		_renderMarkerImage(stationName, parkingBikeTotCnt, map).then(e => {
 			const { width, height, src } = e;
@@ -78,7 +84,20 @@ export function renderMarker({ stationLatitude, stationLongitude, stationName, p
 			const coordinate = new Tmap.LonLat(stationLongitude, stationLatitude).transform("EPSG:4326", "EPSG:3857");
 			const markerSize = new Tmap.Size(width, height);
 			const markerOffset = new Tmap.Pixel(-(markerSize.w / 2), -(markerSize.h / 2));
+
 			const marker = new Tmap.Marker(coordinate, new Tmap.Icon(`${src}`, markerSize,  markerOffset));
+			marker.events.register(`click`, marker, function() {
+				sendMessageToParent({
+					name: `openStationModal`,
+					options: { station }
+				});
+			});
+			marker.events.register(`touchend`, marker, function() {
+				sendMessageToParent({
+					name: `openStationModal`,
+					options: { station }
+				});
+			});
 
 			resolve(marker);
 		});

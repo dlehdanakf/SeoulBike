@@ -28,6 +28,9 @@ const EVENT_LISTENER = {
 				stationList: query.get()
 			}
 		});
+	},
+	openStationModal: function(options, { iframeEl, bikeDB }) {
+		alert(options.station.stationId);
 	}
 };
 
