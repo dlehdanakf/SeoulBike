@@ -1,0 +1,42 @@
+{
+  "name": "default",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cleanup": "rm -rf assets && mkdir assets",
+    "mkdir": "mkdir assets/",
+    "build": "webpack --mode=none",
+    "build:watch": "npm run cleanup && webpack --mode=none --watch",
+    "build:prod": "webpack --mode=production --module-bind js=babel-loader"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.3.3",
+    "@babel/plugin-transform-template-literals": "^7.4.4",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.0",
+    "extract-text-webpack-plugin": "^4.0.0-alpha.0",
+    "fs": "0.0.1-security",
+    "node-sass": "^4.11.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.0.8"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.4.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "jquery": "^3.4.1",
+    "taffydb": "^2.7.3"
+  }
+}

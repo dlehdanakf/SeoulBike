@@ -1,0 +1,6 @@
+dist/
+assets/
+node_modules/
+.idea/
+.DS_Store
+package-lock.json
