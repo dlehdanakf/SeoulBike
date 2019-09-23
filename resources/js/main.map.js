@@ -1,5 +1,5 @@
 import { sendMessageToParent as sendMessage } from "./components/message";
-import { constructMapInstance, renderMarker } from "./components/tmap.js";
+import { constructMapInstance, renderMarker, renderCluster } from "./components/tmap.js";
 
 const EVENT_LISTENER = {
 	markerList: [],
@@ -11,7 +11,6 @@ const EVENT_LISTENER = {
 
 	renderStationStatus: function(options, { map, markerLayer }) {
 		const { stationList } = options;
-
 		this._removeAllMarkers(markerLayer);
 
 		stationList.forEach(e => {
@@ -20,6 +19,17 @@ const EVENT_LISTENER = {
 				this.markerList.push(marker);
 			});
 		});
+	},
+	renderStationCluster: function(options, { map, markerLayer }) {
+		const { clusterList } = options;
+		this._removeAllMarkers(markerLayer);
+
+		clusterList.forEach(e => {
+			renderCluster(e, map).then(marker => {
+				markerLayer.addMarker(marker);
+				this.markerList.push(marker);
+			});
+		})
 	}
 };
 const FIRE_EVENT = {

@@ -1,7 +1,7 @@
 import "@babel/polyfill";
-import $ from "jquery";
-import { taffy } from "taffydb";
 
+import { taffy } from "taffydb";
+import geoCluster from "./components/geocluster";
 import { fetchAllBikeStatus } from "./components/bike";
 import { sendMessageToChild as sendMessage } from "./components/message";
 
@@ -9,8 +9,7 @@ const EVENT_LISTENER = {
 	DATABASE_LOADED: false,
 	EVENT_QUEUE: [],
 
-	requestStationStatus: function(options, { iframeEl, bikeDB }) {
-		const { top, bottom, left, right } = options;
+	_selectStations: function(bikeDB, { top, bottom, left, right }) {
 		const query = bikeDB({
 			stationLatitude: {
 				'>=': bottom,
@@ -22,12 +21,55 @@ const EVENT_LISTENER = {
 			}
 		});
 
-		sendMessage(iframeEl, {
-			name: `renderStationStatus`,
-			options: {
-				stationList: query.get()
+		return query.get();
+	},
+	_getBias: (zoom) => {
+		if(zoom < 10) return zoom;
+		return (20 - zoom) * 0.6;
+	},
+	_calculateClusters: function(stationList, zoom) {
+		const coordinates = [];
+		stationList.forEach(({ stationLongitude, stationLatitude, parkingBikeTotCnt }) => {
+			const cnt = parseInt(parkingBikeTotCnt, 10);
+			for(let i = 0; i < cnt; i++) {
+				coordinates.push([
+					parseFloat(stationLatitude),
+					parseFloat(stationLongitude)
+				]);
 			}
 		});
+
+		const bias = this._getBias(zoom);
+		const clusterList = geoCluster(coordinates, bias);
+		console.log(`clusterSeed`, zoom, bias);
+		const result = [];
+		clusterList.forEach(cluster => {
+			const { centroid, elements } = cluster;
+			const [ latitude, longitude ] = centroid;
+
+			result.push({
+				latitude, longitude, count: elements.length
+			});
+		});
+
+		return result;
+	},
+
+	requestStationStatus: function(options, { iframeEl, bikeDB }) {
+		const { top, bottom, left, right, zoom } = options;
+		const stationList = this._selectStations(bikeDB, { top, bottom, left, right });
+		if(parseInt(zoom, 10) >= 14) {
+			sendMessage(iframeEl, {
+				name: `renderStationStatus`,
+				options: { stationList }
+			});
+		} else {
+			const clusterList = this._calculateClusters(stationList, parseInt(zoom, 10));
+			sendMessage(iframeEl, {
+				name: `renderStationCluster`,
+				options: { clusterList}
+			});
+		}
 	},
 	openStationModal: function(options, { iframeEl, bikeDB }) {
 		alert(options.station.stationId);

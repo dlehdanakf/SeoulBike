@@ -1,6 +1,7 @@
 /* global Tmap */
 import { taffy } from "taffydb";
-import {sendMessageToParent} from "./message";
+import "text-image";
+import { sendMessageToParent } from "./message";
 
 const CENTER = new Tmap.LonLat(`127.07621710650977`, `37.54204488630741`);
 const CACHE = taffy();
@@ -71,6 +72,7 @@ export function constructMapInstance(contentEl, nodeQuery) {
 
 	return { map, markerLayer };
 }
+
 export function renderMarker(station, map) {
 	const {
 		stationLatitude, stationLongitude,
@@ -96,6 +98,58 @@ export function renderMarker(station, map) {
 				sendMessageToParent({
 					name: `openStationModal`,
 					options: { station }
+				});
+			});
+
+			resolve(marker);
+		});
+	});
+}
+
+function _renderText(message) {
+	const textImg = new TextImage({
+		font: `sans-serif`,
+		align: `center`,
+		color: `#212121`,
+		size: 18,
+		background: `transparent`,
+		stroke: 2,
+		strokeColor: `#FFF`,
+		lineHeight: `1`,
+	});
+
+	return new Promise(resolve => {
+		const base64 = textImg.toDataURL(`${message}`);
+		const img = new Image;
+		img.onload = function() {
+			const { width, height } = this;
+			resolve({ base64, width, height });
+		};
+
+		img.src = base64;
+	});
+}
+export function renderCluster(cluster, map) {
+	const { latitude, longitude, count } = cluster;
+	return new Promise(resolve => {
+		_renderText(count).then(e => {
+			const { base64, width, height } = e;
+
+			const coordinate = new Tmap.LonLat(longitude, latitude).transform("EPSG:4326", "EPSG:3857");
+			const markerSize = new Tmap.Size(width, height);
+			const markerOffset = new Tmap.Pixel(-(markerSize.w / 2), -(markerSize.h / 2));
+
+			const marker = new Tmap.Marker(coordinate, new Tmap.Icon(`${base64}`, markerSize,  markerOffset));
+			marker.events.register(`click`, marker, function() {
+				sendMessageToParent({
+					name: `openStationModal`,
+					options: { station: `Cluster!` }
+				});
+			});
+			marker.events.register(`touchend`, marker, function() {
+				sendMessageToParent({
+					name: `openStationModal`,
+					options: { station: `Cluster!` }
 				});
 			});
 
