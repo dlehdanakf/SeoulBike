@@ -70,7 +70,11 @@ export function constructMapInstance(contentEl, nodeQuery) {
 	map.addLayer(markerLayer);
 	map.setCenter(CENTER.transform(`EPSG:4326`, `EPSG:3857`), 16);
 
-	return { map, markerLayer };
+	const vectorLayer = new Tmap.Layer.Vector('Tmap Vector Layer');
+	map.addLayers([vectorLayer]);
+	map.setLayerIndex(vectorLayer, 0);
+
+	return { map, markerLayer, vectorLayer };
 }
 
 export function renderMarker(station, map) {
@@ -114,7 +118,7 @@ function _renderText(message) {
 		size: 18,
 		background: `transparent`,
 		stroke: 2,
-		strokeColor: `#FFF`,
+		strokeColor: `rgba(255, 255, 255, 0.8)`,
 		lineHeight: `1`,
 	});
 
@@ -140,6 +144,7 @@ export function renderCluster(cluster, map) {
 			const markerOffset = new Tmap.Pixel(-(markerSize.w / 2), -(markerSize.h / 2));
 
 			const marker = new Tmap.Marker(coordinate, new Tmap.Icon(`${base64}`, markerSize,  markerOffset));
+
 			marker.events.register(`click`, marker, function() {
 				sendMessageToParent({
 					name: `openStationModal`,
@@ -156,4 +161,44 @@ export function renderCluster(cluster, map) {
 			resolve(marker);
 		});
 	});
+}
+export function renderClusterCircle(cluster, map) {
+	const { latitude, longitude, farcoordinate } = cluster;
+	
+	var style_red = {
+		fillColor:"#FF0000",
+		fillOpacity:0.2,
+		strokeColor: "#FF0000",
+		strokeWidth: 3,
+		strokeDashstyle: "solid",
+		pointRadius: 60
+	};
+
+	/*var centerlonlat = map.getPixelFromLonLat(new Tmap.LonLat(longitude, latitude).transform("EPSG:4326", "EPSG:3857"));
+	var farlonlat = map.getPixelFromLonLat(new Tmap.LonLat(farcoordinate.longitude, farcoordinate. latitude).transform("EPSG:4326", "EPSG:3857"));
+	
+	var centerpx = new Tmap.Pixel(centerlonlat["x"], centerlonlat["y"]);
+	var farpx = new Tmap.Pixel(farlonlat["x"], farlonlat["y"]);
+	
+	var dist = centerpx.distanceTo(farpx);
+	console.log('dist : ' + dist);
+
+	var coord = new Tmap.LonLat(longitude, latitude).transform("EPSG:4326", "EPSG:3857");
+	var circlesize = parseInt(dist*5);*/ 
+
+	var coord = new Tmap.LonLat(longitude, latitude).transform("EPSG:4326", "EPSG:3857");
+	var circlesize;
+
+	switch(map.getZoom()) {
+		case 13: circlesize = 1300; break;
+		case 12: circlesize = 2000; break;
+		case 11: circlesize = 3000; break;
+		case 10: circlesize = 5000; break;
+		case 9: case 8: case 7: case 6: case 5: case 4: case 3: case 2: case 1: circlesize = 6000; break;
+	}
+
+	var circle = new Tmap.Geometry.Circle(coord.lon, coord.lat, circlesize);
+	var circleFeature = new Tmap.Feature.Vector(circle, null, style_red);
+
+	return circleFeature;
 }

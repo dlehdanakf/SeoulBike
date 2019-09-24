@@ -4,6 +4,7 @@ import { taffy } from "taffydb";
 import geoCluster from "./components/geocluster";
 import { fetchAllBikeStatus } from "./components/bike";
 import { sendMessageToChild as sendMessage } from "./components/message";
+import { orderByDistance, convertSpeed } from 'geolib';
 
 const EVENT_LISTENER = {
 	DATABASE_LOADED: false,
@@ -27,6 +28,18 @@ const EVENT_LISTENER = {
 		if(zoom < 10) return zoom;
 		return (20 - zoom) * 0.6;
 	},
+	_getFarCoordinate: function(cluster) {
+		const { centroid, elements } = cluster;
+
+		let lonlatList = [];
+		elements.forEach(e => {
+			const [ latitude, longitude ] = e;
+			lonlatList.push({ latitude: parseFloat(latitude), longitude : parseFloat(longitude) });
+		});
+
+		var distList = orderByDistance({ latitude: parseFloat(centroid.latitude), longitude: parseFloat(centroid.longitude) }, lonlatList);		
+		return distList[distList.length - 1];
+	},
 	_calculateClusters: function(stationList, zoom) {
 		const coordinates = [];
 		stationList.forEach(({ stationLongitude, stationLatitude, parkingBikeTotCnt }) => {
@@ -47,8 +60,10 @@ const EVENT_LISTENER = {
 			const { centroid, elements } = cluster;
 			const [ latitude, longitude ] = centroid;
 
+			const farcoordinate = this._getFarCoordinate(cluster);
+
 			result.push({
-				latitude, longitude, count: elements.length
+				latitude, longitude, count: elements.length, farcoordinate
 			});
 		});
 
@@ -67,7 +82,7 @@ const EVENT_LISTENER = {
 			const clusterList = this._calculateClusters(stationList, parseInt(zoom, 10));
 			sendMessage(iframeEl, {
 				name: `renderStationCluster`,
-				options: { clusterList}
+				options: { clusterList }
 			});
 		}
 	},

@@ -1,17 +1,21 @@
 import { sendMessageToParent as sendMessage } from "./components/message";
-import { constructMapInstance, renderMarker, renderCluster } from "./components/tmap.js";
+import { constructMapInstance, renderMarker, renderCluster, renderClusterCircle } from "./components/tmap.js";
 
 const EVENT_LISTENER = {
 	markerList: [],
-	_removeAllMarkers: function(markerLayer) {
+	vectorList: [],
+	_removeAllMarkers: function(markerLayer, vectorLayer) {
 		while(this.markerList.length > 0) {
 			markerLayer.removeMarker(this.markerList.pop());
 		}
+
+		vectorLayer.removeFeatures(this.vectorList);
+		this.vectorList = [];
 	},
 
-	renderStationStatus: function(options, { map, markerLayer }) {
+	renderStationStatus: function(options, { map, markerLayer, vectorLayer }) {
 		const { stationList } = options;
-		this._removeAllMarkers(markerLayer);
+		this._removeAllMarkers(markerLayer, vectorLayer);
 
 		stationList.forEach(e => {
 			renderMarker(e, map).then(marker => {
@@ -20,14 +24,18 @@ const EVENT_LISTENER = {
 			});
 		});
 	},
-	renderStationCluster: function(options, { map, markerLayer }) {
+	renderStationCluster: function(options, { map, markerLayer, vectorLayer }) {
 		const { clusterList } = options;
-		this._removeAllMarkers(markerLayer);
-
+		this._removeAllMarkers(markerLayer, vectorLayer);
+		
 		clusterList.forEach(e => {
 			renderCluster(e, map).then(marker => {
 				markerLayer.addMarker(marker);
 				this.markerList.push(marker);
+
+				const circle = renderClusterCircle(e, map);
+				this.vectorList.push(circle);
+				vectorLayer.addFeatures([circle]); 
 			});
 		})
 	}
@@ -47,7 +55,7 @@ const FIRE_EVENT = {
 
 document.addEventListener(`DOMContentLoaded`, function() {
 	const contentEl = document.querySelector(`#main-content`);
-	const { map, markerLayer } = constructMapInstance(contentEl, `map-container`);
+	const { map, markerLayer, vectorLayer } = constructMapInstance(contentEl, `map-container`);
 
 	FIRE_EVENT.requestStationStatus(map);
 	map.events.register('moveend', map, () => {
@@ -62,7 +70,7 @@ document.addEventListener(`DOMContentLoaded`, function() {
 			EVENT_LISTENER.hasOwnProperty(name) &&
 			typeof EVENT_LISTENER[name] === `function`
 		) {
-			EVENT_LISTENER[name](options, { map, markerLayer });
+			EVENT_LISTENER[name](options, { map, markerLayer, vectorLayer });
 		}
 	});
 });
