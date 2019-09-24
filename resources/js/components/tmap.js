@@ -1,6 +1,7 @@
 /* global Tmap */
-import { taffy } from "taffydb";
+
 import "text-image";
+import { taffy } from "taffydb";
 import { sendMessageToParent } from "./message";
 
 const CENTER = new Tmap.LonLat(`127.07621710650977`, `37.54204488630741`);
@@ -146,16 +147,12 @@ export function renderCluster(cluster, map) {
 			const marker = new Tmap.Marker(coordinate, new Tmap.Icon(`${base64}`, markerSize,  markerOffset));
 
 			marker.events.register(`click`, marker, function() {
-				sendMessageToParent({
-					name: `openStationModal`,
-					options: { station: `Cluster!` }
-				});
+				const centerLonLat = new Tmap.LonLat(longitude, latitude);
+				map.setCenter(centerLonLat.transform(`EPSG:4326`, `EPSG:3857`), map.getZoom() + 1);
 			});
 			marker.events.register(`touchend`, marker, function() {
-				sendMessageToParent({
-					name: `openStationModal`,
-					options: { station: `Cluster!` }
-				});
+				const centerLonLat = new Tmap.LonLat(longitude, latitude);
+				map.setCenter(centerLonLat.transform(`EPSG:4326`, `EPSG:3857`), map.getZoom() + 1);
 			});
 
 			resolve(marker);
