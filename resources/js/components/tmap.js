@@ -66,6 +66,7 @@ export function constructMapInstance(contentEl, nodeQuery) {
 		width: `${offsetWidth}px`,
 		height: `${offsetHeight}px`
 	});
+	const tData = new Tmap.TData();
 
 	const markerLayer = new Tmap.Layer.Markers;
 	map.addLayer(markerLayer);
@@ -75,7 +76,7 @@ export function constructMapInstance(contentEl, nodeQuery) {
 	map.addLayers([vectorLayer]);
 	map.setLayerIndex(vectorLayer, 0);
 
-	return { map, markerLayer, vectorLayer };
+	return { map, markerLayer, vectorLayer, tData };
 }
 
 export function renderMarker(station, map) {
@@ -160,12 +161,12 @@ export function renderCluster(cluster, map) {
 	});
 }
 export function renderClusterCircle(cluster, map) {
-	const { latitude, longitude, farcoordinate } = cluster;
+	const { latitude, longitude, farcoordinate, count } = cluster;
 	
 	var style_red = {
-		fillColor:"#FF0000",
+		fillColor:"#02a951",
 		fillOpacity:0.2,
-		strokeColor: "#FF0000",
+		strokeColor: "#02a951",
 		strokeWidth: 3,
 		strokeDashstyle: "solid",
 		pointRadius: 60
@@ -181,7 +182,7 @@ export function renderClusterCircle(cluster, map) {
 	console.log('dist : ' + dist);
 
 	var coord = new Tmap.LonLat(longitude, latitude).transform("EPSG:4326", "EPSG:3857");
-	var circlesize = parseInt(dist*5);*/ 
+	var circlesize = parseInt(dist*5);*/
 
 	var coord = new Tmap.LonLat(longitude, latitude).transform("EPSG:4326", "EPSG:3857");
 	var circlesize;
@@ -193,6 +194,9 @@ export function renderClusterCircle(cluster, map) {
 		case 10: circlesize = 5000; break;
 		case 9: case 8: case 7: case 6: case 5: case 4: case 3: case 2: case 1: circlesize = 6000; break;
 	}
+	circlesize = circlesize * ( count / 2000 + 1);
+
+	// 1600 * (500 / 2000 + 1) 
 
 	var circle = new Tmap.Geometry.Circle(coord.lon, coord.lat, circlesize);
 	var circleFeature = new Tmap.Feature.Vector(circle, null, style_red);

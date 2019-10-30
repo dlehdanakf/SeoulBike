@@ -4,7 +4,7 @@ import { taffy } from "taffydb";
 import geoCluster from "./components/geocluster";
 import { fetchAllBikeStatus } from "./components/bike";
 import { sendMessageToChild as sendMessage } from "./components/message";
-import { orderByDistance, convertSpeed } from 'geolib';
+import { orderByDistance, convertSpeed, findNearest } from 'geolib';
 
 const EVENT_LISTENER = {
 	DATABASE_LOADED: false,
