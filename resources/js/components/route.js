@@ -14,6 +14,7 @@ export function removeRoute(map, markerLayer) {
 
 	if(ROUTE_LAYER !== null) {
 		map.removeLayer(ROUTE_LAYER);
+		ROUTE_LAYER = null;
 	}
 }
 
@@ -74,9 +75,8 @@ function requestRoute({ start, end, startStation, endStation }) {
 		});
 		xhr.open(`POST`, `https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=xml`);
 		xhr.setRequestHeader(`appKey`, `3b93e7ea-9bb4-4402-afdb-a96aaab9fa23`);
-		xhr.setRequestHeader(`Content-Type`, `application/x-www-form-urlencoded; charset=UTF-8`);
 
-		xhr.send(formData);
+		xhr.send(JSON.stringify(data));
 	});
 }
 

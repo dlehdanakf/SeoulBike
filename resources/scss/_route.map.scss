@@ -1,0 +1,115 @@
+#route-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-bottom: 1px solid #CCC;
+  height: 99px;
+
+  form {
+    margin: 0;
+    padding: 0 10px;
+    display: table;
+    width: 100%;
+    box-sizing: border-box;
+
+    .col {
+      display: table-cell;
+      vertical-align: bottom;
+
+      .input-wrap {
+        padding: 5px 4px;
+
+        &.start {
+          padding-top: 0;
+        }
+        &.end {
+          padding-bottom: 0;
+        }
+      }
+      .icon-wrap {
+        width: 20px;
+        height: 42px;
+        vertical-align: middle;
+        text-align: center;
+
+        i[class^="xi-"] {
+          display: block;
+          font-size: 20px;
+          padding: 9px 0;
+        }
+
+        &.end {
+          i {
+            padding-top: 15px;
+          }
+        }
+      }
+
+      &.route-icon {
+        opacity: 0.6;
+        position: relative;
+        width: 20px;
+        padding-left: 4px;
+        padding-right: 8px;
+
+        &::after {
+          content: '↓';
+          display: block;
+          font-size: 20px;
+          line-height: 1;
+          width: 12px;
+          text-align: center;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          margin-top: -6px;
+          margin-left: -8px;
+        }
+      }
+      &.route-submit {
+        width: 56px;
+        padding-left: 2px;
+        padding-right: 4px;
+
+        button[type="submit"] {
+          display: block;
+          background: #02a951;
+          height: 36px;
+          width: 56px;
+          border: 0;
+          border-radius: 4px;
+          outline: 0;
+          font-size: 14px;
+          line-height: 1;
+          color: #FFF;
+          box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+
+          i {
+            font-size: 20px;
+          }
+        }
+      }
+    }
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 1;
+      background-color: #efefef;
+      border: 0;
+      outline: 0;
+      border-radius: 4px;
+      color: #435563;
+    }
+  }
+}
+#route-content {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

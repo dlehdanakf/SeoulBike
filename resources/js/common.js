@@ -88,6 +88,45 @@ const EVENT_LISTENER = {
 	},
 	openStationModal: function(options, { iframeEl, bikeDB }) {
 		alert(options.station.stationId);
+	},
+
+	_findNeareast: (position, stationList) => {
+		const { lon, lat } = position;
+		const { longitude, latitude } = findNearest({ longitude: lon, latitude: lat }, stationList);
+
+		return {
+			lon: longitude,
+			lat: latitude
+		};
+	},
+	_searchNearStations: function(positions, bikeDB) {
+		const rawList = bikeDB().get();
+		const stationList = [];
+		rawList.forEach(function(station) {
+			const { stationLatitude, stationLongitude } = station;
+			stationList.push({
+				longitude: stationLongitude,
+				latitude: stationLatitude
+			});
+		});
+
+		const { start, end } = positions;
+		const startStation = this._findNeareast(start, stationList);
+		const endStation = this._findNeareast(end, stationList);
+
+		return {
+			startStation,
+			endStation
+		};
+	},
+	requestRoutePositions: function(options, { iframeEl, bikeDB }) {
+		const { start, end } = options;
+		const { startStation, endStation } = this._searchNearStations({ start, end }, bikeDB);
+
+		sendMessage(iframeEl, {
+			name: `renderRoutes`,
+			options: { start, end, startStation, endStation }
+		});
 	}
 };
 

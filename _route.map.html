@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>서울시 공공자전거 - 따릉이</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+        <link rel="stylesheet" href="assets/bundle.css" />
+        <script src="https://apis.openapi.sk.com/tmap/js?version=1&format=javascript&appKey=3b93e7ea-9bb4-4402-afdb-a96aaab9fa23"></script>
+        <script src="assets/js/route.map.min.js"></script>
+    </head>
+    <body id="application-page">
+        <section id="route-input">
+            <form id="route-form">
+                <div class="col route-icon">
+                    <div class="icon-wrap start"><i class="xi-my-location"></i></div>
+                    <div class="icon-wrap end"><i class="xi-bicycle"></i></div>
+                </div>
+                <div class="col">
+                    <div class="input-wrap start">
+                        <input type="text" placeholder="출발지를 입력하세요" />
+                    </div>
+                    <div class="input-wrap end">
+                        <input type="text" placeholder="도착지를 입력하세요" />
+                    </div>
+                </div>
+                <div class="col route-submit">
+                    <button type="submit"><i class="xi-search"></i></button>
+                </div>
+            </form>
+        </section>
+        <section id="route-content">
+            <div id="map-container"></div>
+        </section>
+    </body>
+</html>

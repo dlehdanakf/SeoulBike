@@ -8,7 +8,8 @@ module.exports = async function(mode = `production`) {
 	const jsFiles = {
 		'scss/common.scss': `${srcPath}/scss/common.scss`,
 		'js/common': `${srcPath}/js/common.js`,
-		'js/main.map': `${srcPath}/js/main.map.js`
+		'js/main.map': `${srcPath}/js/main.map.js`,
+		'js/route.map': `${srcPath}/js/route.map.js`
 	};
 
 	return {
