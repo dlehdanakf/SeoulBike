@@ -136,6 +136,30 @@ document.addEventListener(`DOMContentLoaded`, function() {
 	iframeEl.style.width = `${contentEl.offsetWidth}px`;
 	iframeEl.style.height = `${contentEl.offsetHeight}px`;
 
+	const footerEl = document.querySelector(`#application-footer`);
+	const buttonEls = footerEl.querySelectorAll(`a.nav-button`);
+	buttonEls.forEach(buttonEl => {
+		buttonEl.addEventListener(`click`, function(e) {
+			e.preventDefault();
+
+			const { href } = this;
+			if(!href || href === `#`) {
+				return;
+			}
+
+			if(iframeEl.src === href) {
+				return;
+			}
+
+			iframeEl.src = href;
+			buttonEls.forEach(nodeEl => {
+				delete nodeEl.dataset.active;
+			});
+
+			buttonEl.dataset.active = `${true}`;
+		});
+	});
+
 	const bikeDB = taffy();
 	fetchAllBikeStatus().then(data => {
 		data.forEach(e => {
