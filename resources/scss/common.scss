@@ -175,5 +175,138 @@ html, body {
   }
 }
 
+station-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0,0,0,.3);
+
+  .modal-content {
+    width: 300px;
+    height: 220px;
+    background-color: #FFF;
+    border-radius: 4px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -110px;
+    margin-left: -150px;
+    box-shadow: 0px 5px 6px 0px rgba(0,0,0,0.1);
+  }
+  .modal-header {
+    padding: 14px 14px 10px 14px;
+    margin: 0;
+    border-bottom: 1px solid #CCC;
+
+    p {
+      font-size: 12px;
+      color: #AAA;
+      line-height: 1;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      margin: 6px 0 0 0;
+      padding: 0 20px 0 0;
+      color: $color_dark;
+      font-size: 18px;
+      line-height: 1;
+    }
+    a[role="close-modal"] {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 4px;
+      color: #AAA;
+      font-size: 18px;
+    }
+  }
+  .modal-body {
+    margin: 0;
+    padding: 14px;
+
+    .title {
+      margin: 0;
+      padding: 10px 0;
+      text-align: center;
+      line-height: 1;
+      vertical-align: bottom;
+      font-size: 16px;
+      color: $color_dark;
+
+      .count {
+        font-size: 32px;
+        font-weight: bold;
+        margin: 0 2px;
+      }
+    }
+    .title-none {
+      display: none;
+      margin: 0;
+      padding: 20px 0 14px 0;
+      text-align: center;
+      line-height: 1;
+      vertical-align: bottom;
+      font-size: 18px;
+      color: $color_dark;
+    }
+    .description {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      line-height: 1;
+      vertical-align: top;
+      font-size: 15px;
+      color: #AAA;
+    }
+    button.ride {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      border: 0;
+      border-radius: 3px;
+      background-color: $color_primary;
+      color: #FFF;
+      line-height: 1;
+      height: auto;
+      font-size: 0;
+      vertical-align: text-bottom;
+      padding: 9px 12px 7px 12px;
+
+      i {
+        font-size: 20px;
+        vertical-align: bottom;
+      }
+      span {
+        font-size: 14px;
+        display: inline-block;
+        margin: 3px 0 3px 7px;
+        vertical-align: bottom;
+      }
+    }
+
+    &[data-count="0"],
+    &[data-count="undefined"] {
+      .title {
+        display: none;
+      }
+      .title-none {
+        display: block;
+      }
+      button.ride {
+        background-color: #CCC;
+        opacity: 0.5;
+      }
+    }
+  }
+
+  &[data-show="true"] {
+    display: block;
+  }
+}
+
 @import "_main.map.scss";
 @import "_route.map.scss";

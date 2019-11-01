@@ -1,10 +1,12 @@
 import "@babel/polyfill";
 
 import { taffy } from "taffydb";
+import { orderByDistance, findNearest } from 'geolib';
+
+import StationModal from "./components/station.modal";
 import geoCluster from "./components/geocluster";
 import { fetchAllBikeStatus } from "./components/bike";
 import { sendMessageToChild as sendMessage } from "./components/message";
-import { orderByDistance, convertSpeed, findNearest } from 'geolib';
 
 const EVENT_LISTENER = {
 	DATABASE_LOADED: false,
@@ -86,8 +88,9 @@ const EVENT_LISTENER = {
 			});
 		}
 	},
-	openStationModal: function(options, { iframeEl, bikeDB }) {
-		alert(options.station.stationId);
+	openStationModal: function(options, { stationEl }) {
+		const { station } = options;
+		stationEl.setState(station);
 	},
 
 	_findNeareast: (position, stationList) => {
@@ -129,13 +132,7 @@ const EVENT_LISTENER = {
 		});
 	}
 };
-
-document.addEventListener(`DOMContentLoaded`, function() {
-	const contentEl = document.querySelector(`#application-content`)
-	const iframeEl = document.querySelector(`#application-frame`);
-	iframeEl.style.width = `${contentEl.offsetWidth}px`;
-	iframeEl.style.height = `${contentEl.offsetHeight}px`;
-
+function bindNavClickEvent() {
 	const footerEl = document.querySelector(`#application-footer`);
 	const buttonEls = footerEl.querySelectorAll(`a.nav-button`);
 	buttonEls.forEach(buttonEl => {
@@ -159,6 +156,23 @@ document.addEventListener(`DOMContentLoaded`, function() {
 			buttonEl.dataset.active = `${true}`;
 		});
 	});
+}
+function createStationModal() {
+	const stationEl = document.createElement(`station-modal`);
+	document.body.appendChild(stationEl);
+
+	return stationEl;
+}
+
+document.addEventListener(`DOMContentLoaded`, function() {
+	const contentEl = document.querySelector(`#application-content`)
+	const iframeEl = document.querySelector(`#application-frame`);
+	iframeEl.style.width = `${contentEl.offsetWidth}px`;
+	iframeEl.style.height = `${contentEl.offsetHeight}px`;
+
+	bindNavClickEvent();
+	window.customElements.define(`station-modal`, StationModal);
+	const stationEl = createStationModal();
 
 	const bikeDB = taffy();
 	fetchAllBikeStatus().then(data => {
@@ -172,7 +186,7 @@ document.addEventListener(`DOMContentLoaded`, function() {
 				EVENT_LISTENER.hasOwnProperty(name) &&
 				typeof EVENT_LISTENER[name] === `function`
 			) {
-				EVENT_LISTENER[name](options, { iframeEl, bikeDB });
+				EVENT_LISTENER[name](options, { iframeEl, stationEl, bikeDB });
 			}
 		});
 
@@ -182,7 +196,7 @@ document.addEventListener(`DOMContentLoaded`, function() {
 				EVENT_LISTENER.hasOwnProperty(name) &&
 				typeof EVENT_LISTENER[name] === `function`
 			) {
-				EVENT_LISTENER[name](options, { iframeEl, bikeDB });
+				EVENT_LISTENER[name](options, { iframeEl, stationEl, bikeDB });
 			}
 		}
 	});
@@ -198,7 +212,7 @@ document.addEventListener(`DOMContentLoaded`, function() {
 				EVENT_LISTENER.hasOwnProperty(name) &&
 				typeof EVENT_LISTENER[name] === `function`
 			) {
-				EVENT_LISTENER[name](options, { iframeEl, bikeDB });
+				EVENT_LISTENER[name](options, { iframeEl, stationEl, bikeDB });
 			}
 		}
 	});
