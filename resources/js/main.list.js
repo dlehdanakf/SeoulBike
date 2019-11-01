@@ -2,31 +2,35 @@ import { sendMessageToParent as sendMessage } from "./components/message";
 
 const FAVORITE_LIST = [
 	{
-		parkingBikeTotCnt: "4",
-		stationId: "ST-3506",
-		stationName: "3506. 영동대교 북단"
+		parkingBikeTotCnt: `4`,
+		stationId: `ST-3506`,
+		stationName: `3506. 영동대교 북단`,
+		rackTotCnt: `10`
 	},
 	{
-		parkingBikeTotCnt: "12",
-		stationId: "ST-540",
-		stationName: "540. 군자역 7번출구 베스트샵 앞"
+		parkingBikeTotCnt: `12`,
+		stationId: `ST-540`,
+		stationName: `540. 군자역 7번출구 베스트샵 앞`,
+		rackTotCnt: `10`
 	}
 ];
 const AROUND_LIST = [
 	{
-		parkingBikeTotCnt: "1",
-		stationId: "ST-592",
-		stationName: "592. 건국대학교 학생회관"
+		parkingBikeTotCnt: `1`,
+		stationId: `ST-592`,
+		stationName: `592. 건국대학교 학생회관`,
+		rackTotCnt: `10`
 	},
 	{
-		parkingBikeTotCnt: "6",
-		stationId: "ST-591",
-		stationName: "591. 건국대학교 (행정관)"
+		parkingBikeTotCnt: `6`,
+		stationId: `ST-591`,
+		stationName: `591. 건국대학교 (행정관)`,
+		rackTotCnt: `10`
 	},
 	{
-		parkingBikeTotCnt: "14",
-		stationId: "ST-590",
-		stationName: "590. 건국대학교 (입학정보관)"
+		parkingBikeTotCnt: `14`,
+		stationId: `ST-590`,
+		stationName: `590. 건국대학교 (입학정보관)`
 	}
 ];
 
@@ -87,6 +91,13 @@ function renderStationList(parentEl, stationList) {
 	const fragmentEl = document.createDocumentFragment();
 	stationList.forEach(station => {
 		const stationEl = renderStationItem(station);
+		stationEl.addEventListener(`click`, function() {
+			sendMessage({
+				name: `openStationModal`,
+				options: { station }
+			});
+		});
+
 		fragmentEl.appendChild(stationEl);
 	});
 
