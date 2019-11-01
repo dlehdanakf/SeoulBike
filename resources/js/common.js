@@ -56,7 +56,6 @@ const EVENT_LISTENER = {
 
 		const bias = this._getBias(zoom);
 		const clusterList = geoCluster(coordinates, bias);
-		console.log(`clusterSeed`, zoom, bias);
 		const result = [];
 		clusterList.forEach(cluster => {
 			const { centroid, elements } = cluster;
@@ -129,6 +128,33 @@ const EVENT_LISTENER = {
 		sendMessage(iframeEl, {
 			name: `renderRoutes`,
 			options: { start, end, startStation, endStation }
+		});
+	},
+
+	requestStationList: function(options, { iframeEl, bikeDB }) {
+		const stationList = bikeDB().get();
+		sendMessage(iframeEl, {
+			name: `renderStationList`,
+			options: { stationList }
+		});
+	},
+
+	_searchKeyword: (bikeDB, keyword) => {
+		const query = bikeDB({
+			stationName: {
+				likenocase: `${keyword}`
+			}
+		});
+
+		return query.get();
+	},
+	requestSearchStation: function(options, { iframeEl, bikeDB }) {
+		const { keyword } = options;
+		const stationList = this._searchKeyword(bikeDB, keyword);
+
+		sendMessage(iframeEl, {
+			name: `renderSearchResult`,
+			options: { stationList, keyword }
 		});
 	}
 };

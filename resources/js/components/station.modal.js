@@ -1,3 +1,10 @@
+function _getMarkerLabelString(e) {
+	const nameArr = e.split(` `);
+	nameArr.splice(0, 1);
+
+	return nameArr.join(` `);
+}
+
 class StationModal extends HTMLElement {
 	constructor() {
 		super();
@@ -25,8 +32,8 @@ class StationModal extends HTMLElement {
 		this.innerHTML =
 			`<div class="modal-content">
 				<div class="modal-header">
-					<p>따릉이 자전거 거치소</p>
-					<h1>${stationName}</h1>
+					<p>따릉이 자전거 대여소</p>
+					<h1>${_getMarkerLabelString(stationName)}</h1>
 					<a href="#" role="close-modal"><i class="xi-close"></i></a>
 				</div>
 				<div class="modal-body" data-count="${parkingBikeTotCnt}">

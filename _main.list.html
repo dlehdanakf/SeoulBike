@@ -6,14 +6,40 @@
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
         <link rel="stylesheet" href="assets/bundle.css" />
+        <script src="assets/js/main.list.min.js"></script>
     </head>
     <body id="application-page">
         <section id="main-tab">
             <div><a href="_main.map.html"><i class="xi-map-o"></i><span>지도 보기</span></a></div>
             <div><a href="_main.list.html" data-active="true"><i class="xi-list"></i><span>리스트 보기</span></a></div>
         </section>
-        <section id="main-content">
-            <div id="map-container"></div>
+        <section id="main-list">
+            <form class="search-station">
+                <div class="form-wrap">
+                    <div class="input-wrap">
+                        <input type="text" id="search-station" placeholder="거치소 이름을 입력하세요" />
+                    </div>
+                    <div class="button">
+                        <i class="xi-search"></i>
+                    </div>
+                </div>
+            </form>
+            <div class="station-list">
+                <h2 class="section-title">즐겨찾는 거치소</h2>
+                <ul id="favorite-list"></ul>
+            </div>
+            <div class="station-list">
+                <h2 class="section-title">내 주변 거치소</h2>
+                <ul id="around-list"></ul>
+            </div>
+            <div class="station-list">
+                <h2 class="section-title">전체 거치소</h2>
+                <ul id="all-list"></ul>
+            </div>
+            <div class="station-list search-list">
+                <h2 class="section-title">거치소 검색결과</h2>
+                <ul id="search-list"></ul>
+            </div>
         </section>
     </body>
 </html>

@@ -9,6 +9,7 @@ module.exports = async function(mode = `production`) {
 		'scss/common.scss': `${srcPath}/scss/common.scss`,
 		'js/common': `${srcPath}/js/common.js`,
 		'js/main.map': `${srcPath}/js/main.map.js`,
+		'js/main.list': `${srcPath}/js/main.list.js`,
 		'js/route.map': `${srcPath}/js/route.map.js`
 	};
 
