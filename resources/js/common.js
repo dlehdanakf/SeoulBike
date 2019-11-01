@@ -132,7 +132,7 @@ const EVENT_LISTENER = {
 		});
 	}
 };
-function bindNavClickEvent() {
+function bindNavClickEvent(iframeEl) {
 	const footerEl = document.querySelector(`#application-footer`);
 	const buttonEls = footerEl.querySelectorAll(`a.nav-button`);
 	buttonEls.forEach(buttonEl => {
@@ -170,7 +170,7 @@ document.addEventListener(`DOMContentLoaded`, function() {
 	iframeEl.style.width = `${contentEl.offsetWidth}px`;
 	iframeEl.style.height = `${contentEl.offsetHeight}px`;
 
-	bindNavClickEvent();
+	bindNavClickEvent(iframeEl);
 	window.customElements.define(`station-modal`, StationModal);
 	const stationEl = createStationModal();
 
