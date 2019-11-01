@@ -1,0 +1,146 @@
+@import "_colors.scss";
+
+#tickets-content {
+  .content-header {
+    padding: 10px 14px 0 14px;
+
+    h1 {
+      margin: 0;
+      padding: 0;
+      line-height: 1;
+      font-size: 18px;
+      font-weight: normal;
+      color: $color_dark;
+
+    }
+  }
+  .content-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 18px;
+
+    > li {
+      position: relative;
+      margin: 28px 0 18px 0;
+      padding: 14px 14px 6px 14px;
+      border: 1px solid #CCC;
+      border-radius: 6px;
+
+      .list-label {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 80px;
+        height: 30px;
+        background-color: #FFF;
+        margin-top: -15px;
+        margin-left: -40px;
+        vertical-align: bottom;
+        font-size: 0;
+        color: transparent;
+        line-height: 1;
+        text-align: center;
+
+        i {
+          display: inline-block;
+          font-size: 24px;
+          color: $color_dark;
+        }
+        span {
+          display: inline-block;
+          font-size: 16px;
+          color: $color_dark;
+          padding: 2px 0;
+          margin: 0 0 0 4px;
+          vertical-align: bottom;
+        }
+      }
+      .description {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        font-size: 14px;
+        color: #AAA;
+      }
+      .ticket-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        > li {
+          margin: 0;
+          padding: 10px 6px;
+          border-top: 1px solid #E1E1E1;
+
+          .view-table {
+            display: table;
+            width: 100%;
+
+            > div {
+              display: table-cell;
+              vertical-align: middle;
+            }
+            .ticket-content {
+              margin: 0;
+              padding: 14px 0;
+
+              h4 {
+                margin: 0;
+                padding: 0;
+                font-size: 18px;
+                font-weight: normal;
+                color: $color_dark;
+                line-height: 1;
+              }
+            }
+            .button {
+              width: 80px;
+              padding-left: 10px;
+
+              button {
+                display: block;
+                background-color: $color_primary;
+                height: auto;
+                width: 100%;
+                line-height: 1;
+                font-size: 0;
+                color: transparent;
+                border: 0;
+                border-radius: 3px;
+                vertical-align: bottom;
+                padding: 8px 0;
+                text-align: center;
+
+                i {
+                  display: inline-block;
+                  font-size: 20px;
+                  color: #FFF;
+                  vertical-align: bottom;
+                }
+                span {
+                  display: inline-block;
+                  font-size: 15px;
+                  color: #FFF;
+                  vertical-align: bottom;
+                  padding: 2px 0 2px 6px;
+                }
+
+                &.gift {
+                  background-color: #E5E5E5;
+
+                  i, span {
+                    color: $color_dark;
+                  }
+                }
+              }
+            }
+          }
+
+          &:first-child {
+            border-top: 0;
+          }
+        }
+      }
+    }
+  }
+}
