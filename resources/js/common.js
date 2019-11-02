@@ -8,6 +8,30 @@ import geoCluster from "./components/geocluster";
 import { fetchAllBikeStatus } from "./components/bike";
 import { sendMessageToChild as sendMessage } from "./components/message";
 
+const LANG = {
+    ko: {
+        0: `알림`,
+        1: `한국어`,
+        2: `회원`,
+        3: `실시간`,
+        4: `경로탐색`,
+        5: `대여하기`,
+        6: `이용권`,
+        7: `이용안내`
+    },
+    en: {
+        0: `Noti`,
+        1: `English`,
+        2: `Profile`,
+        3: `Status`,
+        4: `Route`,
+        5: `Rent`,
+        6: `Ticket`,
+        7: `Info`
+    }
+};
+let currentLang = "ko";
+
 const EVENT_LISTENER = {
 	DATABASE_LOADED: false,
 	EVENT_QUEUE: [],
@@ -156,6 +180,13 @@ const EVENT_LISTENER = {
 			name: `renderSearchResult`,
 			options: { stationList, keyword }
 		});
+	},
+
+	requestLanguageStatus: function(options, { iframeEl }) {
+		sendMessage(iframeEl, {
+			name: `changeLanguage`,
+			options: { language : currentLang }
+		});
 	}
 };
 function bindNavClickEvent(iframeEl) {
@@ -242,4 +273,31 @@ document.addEventListener(`DOMContentLoaded`, function() {
 			}
 		}
 	});
+
+	document.getElementById('translate').addEventListener('click', function(e) {
+		e.preventDefault();
+		switch(currentLang) {
+			case "ko":
+				changeLanguage("en");
+				currentLang = "en";
+			break;
+			case "en":
+				changeLanguage("ko");
+				currentLang = "ko";
+			break;
+		}
+	});
+
+	function changeLanguage(option) {
+		const langEl = document.querySelectorAll(`[data-lang-num]`);
+		langEl.forEach(nodeEl => {
+			const { langNum } = nodeEl.dataset;
+			nodeEl.innerHTML = `${LANG[option][langNum]}`;
+		});
+
+		sendMessage(iframeEl, {
+			name: `changeLanguage`,
+			options: { language: option }
+		});
+	}
 });

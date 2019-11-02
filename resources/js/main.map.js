@@ -53,6 +53,7 @@ const FIRE_EVENT = {
 	}
 };
 
+
 document.addEventListener(`DOMContentLoaded`, function() {
 	const contentEl = document.querySelector(`#main-content`);
 	const { map, markerLayer, vectorLayer, tData } = constructMapInstance(contentEl, `map-container`);
