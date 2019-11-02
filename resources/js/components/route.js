@@ -83,9 +83,26 @@ function requestRoute({ start, end, startStation, endStation }) {
 export function renderRoute(map, markerLayer, positions) {
 	ROUTE_LAYER = new Tmap.Layer.Vector(`route`);
 	ROUTE_LAYER.events.register("beforefeatureadded", ROUTE_LAYER, onBeforeFeatureAdded);
+	let routeStyle;
+	let passbyStyle = false;
 	function onBeforeFeatureAdded(e) {
 		let style = {};
-		style.strokeColor = "#ff0000";
+
+		switch(e.feature.attributes.styleUrl) {
+			case "#startPointStyle":
+				routeStyle = "start";
+			break;
+			case "#passPointStyle":
+				if(routeStyle === "start") {
+					routeStyle = "passby";
+				}
+				else {
+					routeStyle = "end";
+				}
+			break;
+		}
+
+		style.strokeColor = (routeStyle === "passby")? "#02a951" : "#f49102";
 		style.strokeOpacity = "1";
 		style.strokeWidth = "5";
 		e.feature.style = style;
