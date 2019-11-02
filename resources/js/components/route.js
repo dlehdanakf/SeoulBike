@@ -82,12 +82,15 @@ function requestRoute({ start, end, startStation, endStation }) {
 
 export function renderRoute(map, markerLayer, positions) {
 	ROUTE_LAYER = new Tmap.Layer.Vector(`route`);
-	ROUTE_LAYER.events.register(`beforefeatureadded`, ROUTE_LAYER, e => {
-		e.feature.style.strokeColor = `#ff0000`;
-		e.feature.style.strokeOpacity = `1`;
-		e.feature.style.strokeWidth = `5`;
-	});
-	
+	ROUTE_LAYER.events.register("beforefeatureadded", ROUTE_LAYER, onBeforeFeatureAdded);
+	function onBeforeFeatureAdded(e) {
+		let style = {};
+		style.strokeColor = "#ff0000";
+		style.strokeOpacity = "1";
+		style.strokeWidth = "5";
+		e.feature.style = style;
+	}
+
 	([`start`, `end`, `startStation`, `endStation`]).forEach(e => {
 		const marker = generateMarker(e, positions[e]);
 		MARKER_LIST.push(marker);
