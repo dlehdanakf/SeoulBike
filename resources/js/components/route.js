@@ -102,9 +102,10 @@ export function renderRoute(map, markerLayer, positions) {
 			break;
 		}
 
-		style.strokeColor = (routeStyle === "passby")? "#02a951" : "#f49102";
+		style.strokeColor ="#A85DFF";
+		style.strokeDashstyle = (routeStyle === "passby")? "solid" : "dash";
 		style.strokeOpacity = "1";
-		style.strokeWidth = "5";
+		style.strokeWidth = (routeStyle === "passby")? "5" : "2";
 		e.feature.style = style;
 	}
 
