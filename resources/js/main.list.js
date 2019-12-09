@@ -76,7 +76,8 @@ function renderStationItem(station) {
 	const itemEl = document.createElement(`li`);
 	itemEl.innerHTML =
 		`<div class="station-content">
-			<p>${stationId}</p>
+			<p style='display: inline-block;'>${stationId}</p>
+			<img style='width: 40px; margin-bottom: -15px;' src="https://www.iconninja.com/files/855/188/944/point-hand-finger-press-click-touch-push-icon.png"><br>
 			<h3>${_getMarkerLabelString(stationName)}</h3>
 		</div>
 		<div class="station-count" data-count="${parkingBikeTotCnt}">
