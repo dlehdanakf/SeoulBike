@@ -113,6 +113,60 @@ export function renderRoute(map, markerLayer, positions) {
 		const marker = generateMarker(e, positions[e]);
 		MARKER_LIST.push(marker);
 		markerLayer.addMarker(marker);
+
+		if(e === `startStation`) {
+			const { lon, lat } = positions[e];
+			const content = `<div style=' position: relative; border-bottom: 1px solid #dcdcdc; line-height: 18px;'>
+								<div style='font-size: 12px; line-height: 15px;'>
+									<span style='display: inline-block; width: 14px; height: 14px; vertical-align: middle; margin-right: 5px; margin-bottom: 3px; font-weight: bold;'>건국대학교 학생회관</span>
+								</div>
+							</div>
+							<div style='position: relative; padding-top: 5px; display:inline-block'>
+								<div style='display:inline-block; margin-left:5px; vertical-align: top;'>
+									<span style='font-size: 12px; margin-left:2px; display:block;'><span style='font-weight: bold; font-size: 20px;'>7</span> 대 대여가능</span>
+								</div>
+							</div>`;
+			const popup = new Tmap.Popup("p1",
+							new Tmap.LonLat(lon-0.004, lat).transform("EPSG:4326", "EPSG:3857"),
+							new Tmap.Size(50, 50),
+							content,
+							onPopupClose
+							);
+			popup.setOpacity(0.8);
+			popup.autoSize=true;	                         
+			map.addPopup(popup);
+			
+			function onPopupClose(evt) {
+				select.unselectAll();
+			}
+		}
+
+		if(e === `endStation`) {
+			const { lon, lat } = positions[e];
+			const content = `<div style=' position: relative; border-bottom: 1px solid #dcdcdc; line-height: 18px;'>
+								<div style='font-size: 12px; line-height: 15px;'>
+									<span style='display: inline-block; width: 14px; height: 14px; vertical-align: middle; margin-right: 5px; margin-bottom: 3px; font-weight: bold;'>뚝섬 유원지역</span>
+								</div>
+							</div>
+							<div style='position: relative; padding-top: 5px; display:inline-block'>
+								<div style='display:inline-block; margin-left:5px; vertical-align: top;'>
+									<span style='font-size: 12px; margin-left:2px; display:block;'><span style='font-weight: bold; font-size: 20px;'>2</span> 대 대여가능</span>
+								</div>
+							</div>`;
+			const popup = new Tmap.Popup("p1",
+							new Tmap.LonLat(lon, lat).transform("EPSG:4326", "EPSG:3857"),
+							new Tmap.Size(50, 50),
+							content,
+							onPopupClose
+							);
+			popup.setOpacity(0.8);
+			popup.autoSize=true;	                         
+			map.addPopup(popup);
+			
+			function onPopupClose(evt) {
+				select.unselectAll();
+			}
+		}
 	});
 
 	requestRoute(positions).then(({ distance, time, xml }) => {
